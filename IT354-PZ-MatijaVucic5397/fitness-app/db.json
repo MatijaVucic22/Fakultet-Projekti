@@ -1,0 +1,81 @@
+{
+  "users": [
+    {
+      "id": "0097",
+      "name": "Matija",
+      "email": "Matija123@gmail.com",
+      "password": "Matija123",
+      "role": "trainer"
+    },
+    {
+      "id": "d783",
+      "name": "Pavle",
+      "email": "Pavle123@gmail.com",
+      "password": "Pavle123",
+      "role": "client"
+    },
+    {
+      "id": "2d57",
+      "name": "Nikola",
+      "email": "Nikola123@gmail.com",
+      "password": "Nikola123",
+      "role": "client"
+    }
+  ],
+  "trainings": [
+    {
+      "clientId": "d783",
+      "trainerId": "0097",
+      "frequency": "4xNedeljno",
+      "days": [
+        "pon - Odmor",
+        "uto - Upper",
+        "sre - Lower",
+        "čet - Odmor",
+        "pet - Upper",
+        "sub - Lower",
+        "ned - Odmor"
+      ],
+      "id": "281d"
+    },
+    {
+      "id": "f22b",
+      "clientId": "2d57",
+      "trainerId": "0097",
+      "frequency": "3xNedeljno",
+      "days": [
+        "pon",
+        "uto - Kruzni trening",
+        "sre",
+        "čet - Kruzni trening",
+        "pet",
+        "sub - Kruzni trening",
+        "ned"
+      ]
+    }
+  ],
+  "nutritionPlans": [
+    {
+      "clientId": "d783",
+      "trainerId": "0097",
+      "calories": "3000kcal",
+      "meals": [
+        "Ovsena kasa sa vocem",
+        "Pilotina i pirinac",
+        "Dimljeni losos"
+      ],
+      "id": "e747"
+    },
+    {
+      "id": "9825",
+      "clientId": "2d57",
+      "trainerId": "0097",
+      "calories": "2500kcal",
+      "meals": [
+        "Jaja i povrce",
+        "Punjene paprike",
+        "Ovsena kasa"
+      ]
+    }
+  ]
+}
