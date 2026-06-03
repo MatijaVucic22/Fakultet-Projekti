@@ -1,0 +1,153 @@
+package com.example.fotolajk.service;
+
+import com.example.fotolajk.model.Album;
+import com.example.fotolajk.model.Category;
+import com.example.fotolajk.model.Photo;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+@Service
+public class PhotoService {
+
+    private final List<Photo> photos = new ArrayList<>();
+    private final List<Album> albums = new ArrayList<>();
+
+    private long nextPhotoId = 1;
+    private long nextAlbumId = 1;
+
+    public PhotoService() {
+        // Albume tretiramo kao korisničke kolekcije/foldere,
+        // a ne kao temu slike.
+        Album a1 = new Album(nextAlbumId++, "Lični album");
+        Album a2 = new Album(nextAlbumId++, "Letovanje");
+        Album a3 = new Album(nextAlbumId++, "Faks / Projekti");
+        Album a4 = new Album(nextAlbumId++, "Memeovi");
+
+        albums.add(a1);
+        albums.add(a2);
+        albums.add(a3);
+        albums.add(a4);
+
+        // Demo fotka - recimo da je lična slika iz prirode
+        Photo demo = new Photo(
+                nextPhotoId++,
+                "Prvi primer",
+                "Ovo je demo opis",
+                Category.PRIRODA, // ovo kaže šta je na slici
+                null,
+                a1              // ovo kaže u koji "user album" ide
+        );
+        photos.add(demo);
+        a1.addPhoto(demo);
+
+        System.out.println("INIT:");
+        for (Photo p : photos) {
+            System.out.println("  id=" + p.getId()
+                    + " title=" + p.getTitle()
+                    + " category=" + p.getCategory()
+                    + " album=" + (p.getAlbum() != null ? p.getAlbum().getName() : "nema"));
+        }
+    }
+
+    // Vrati sve albume da ih prikažemo u <select> u formi
+    public List<Album> getAllAlbums() {
+        return albums;
+    }
+
+    public Album findAlbumById(Long albumId) {
+        return albums.stream()
+                .filter(a -> a.getId().equals(albumId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    // CREATE
+    public Photo addNew(String title,
+                        String description,
+                        Category category,
+                        String imageUrl,
+                        Long albumId) {
+
+        Album album = findAlbumById(albumId);
+
+        Photo p = new Photo(nextPhotoId++, title, description, category, imageUrl, album);
+        photos.add(p);
+
+        if (album != null) {
+            album.addPhoto(p);
+        }
+
+        System.out.println("DODATO:");
+        System.out.println("  id=" + p.getId());
+        System.out.println("  title=" + p.getTitle());
+        System.out.println("  category=" + p.getCategory());
+        System.out.println("  imageUrl=" + p.getImageUrl());
+        System.out.println("  album=" + (album != null ? album.getName() : "nema"));
+
+        return p;
+    }
+
+    // READ - sve
+    public List<Photo> findAll() {
+        return photos;
+    }
+
+    // READ - jedna
+    public Photo findById(Long id) {
+        return photos.stream()
+                .filter(p -> p.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
+    // UPDATE
+    public boolean updatePhoto(Long id,
+                               String title,
+                               String description,
+                               Category category,
+                               String imageUrl,
+                               Long albumId) {
+
+        Photo p = findById(id);
+        if (p == null) return false;
+
+        p.setTitle(title);
+        p.setDescription(description);
+        p.setCategory(category);
+
+        if (imageUrl != null && !imageUrl.isBlank()) {
+            p.setImageUrl(imageUrl);
+        }
+
+        Album newAlbum = findAlbumById(albumId);
+        p.setAlbum(newAlbum);
+
+        System.out.println("IZMENJENO:");
+        System.out.println("  id=" + p.getId());
+        System.out.println("  new title=" + p.getTitle());
+        System.out.println("  new category=" + p.getCategory());
+        System.out.println("  new imageUrl=" + p.getImageUrl());
+        System.out.println("  new album=" + (newAlbum != null ? newAlbum.getName() : "nema"));
+
+        return true;
+    }
+
+    // DELETE
+    public boolean deleteById(Long id) {
+        Iterator<Photo> it = photos.iterator();
+        while (it.hasNext()) {
+            Photo p = it.next();
+            if (p.getId().equals(id)) {
+                if (p.getAlbum() != null) {
+                    p.getAlbum().getPhotos().remove(p);
+                }
+                it.remove();
+                return true;
+            }
+        }
+        return false;
+    }
+}
